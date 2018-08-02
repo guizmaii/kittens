@@ -1,7 +1,6 @@
-import com.typesafe.sbt.pgp.PgpKeys.publishSigned
-import org.scalajs.sbtplugin.cross.CrossProject
-import ReleaseTransformations._
 import sbt._
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val buildSettings = Seq(
   organization := "org.typelevel",
@@ -60,11 +59,13 @@ lazy val root = project.in(file("."))
   .settings(coreSettings:_*)
   .settings(noPublishSettings)
 
-lazy val core = crossProject.crossType(CrossType.Pure)
-  .settings(moduleName := "kittens")
-  .settings(coreSettings:_*)
-  .jsSettings(commonJsSettings:_*)
-  .jvmSettings(commonJvmSettings:_*)
+lazy val core =
+  crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Pure)
+    .settings(moduleName := "kittens")
+    .settings(coreSettings:_*)
+    .jsSettings(commonJsSettings:_*)
+    .jvmSettings(commonJvmSettings:_*)
 
 
 lazy val coreJVM = core.jvm
@@ -117,8 +118,8 @@ lazy val publishSettings = Seq(
 )
 
 lazy val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
+  publish := {},
+  publishLocal := {},
   publishArtifact := false
 )
 
